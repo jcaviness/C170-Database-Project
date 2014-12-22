@@ -1,0 +1,197 @@
+-- -----------------------------------------------------
+-- Table `Donut`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Donut` (
+  `idDonut` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `description` VARCHAR(255) NULL,
+  PRIMARY KEY (`idDonut`));
+
+CREATE UNIQUE INDEX `name_UNIQUE` ON `Donut` (`name` ASC);
+
+
+-- -----------------------------------------------------
+-- Table `Tax`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Tax` (
+  `idTax` INT NOT NULL AUTO_INCREMENT,
+  `salesTax` INT(2) NOT NULL,
+  PRIMARY KEY (`idTax`));
+
+
+-- -----------------------------------------------------
+-- Table `Sales Order`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Sales Order` (
+  `idSales Order` INT NOT NULL AUTO_INCREMENT,
+  `specialNotes` VARCHAR(45) NULL,
+  `date` DATETIME NOT NULL,
+  `Tax_idTax` INT NOT NULL,
+  PRIMARY KEY (`idSales Order`, `Tax_idTax`);
+ALTER TABLE `Sales Order`
+  ADD CONSTRAINT `fk_Sales Order_Tax1`
+    FOREIGN KEY (`Tax_idTax`)
+    REFERENCES `Tax` (`idTax`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+CREATE INDEX `fk_Sales Order_Tax1_idx` ON `Sales Order` (`Tax_idTax` ASC);
+
+
+-- -----------------------------------------------------
+-- Table `Sales Order_has_Donut`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Sales Order_has_Donut` (
+  `Sales Order_idSales Order` INT NOT NULL,
+  `Donut_idDonut` INT NOT NULL,
+  PRIMARY KEY (`Sales Order_idSales Order`, `Donut_idDonut`);
+ALTER TABLE `Sales Order_has_Donut`
+  ADD CONSTRAINT `fk_Sales Order_has_Donut_Sales Order1`
+    FOREIGN KEY (`Sales Order_idSales Order`)
+    REFERENCES `Sales Order` (`idSales Order`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+ALTER TABLE `Sales Order_has_Donut`
+  ADD CONSTRAINT `fk_Sales Order_has_Donut_Donut1`
+    FOREIGN KEY (`Donut_idDonut`)
+    REFERENCES `Donut` (`idDonut`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+CREATE INDEX `fk_Sales Order_has_Donut_Donut1_idx` ON `Sales Order_has_Donut` (`Donut_idDonut` ASC);
+
+CREATE INDEX `fk_Sales Order_has_Donut_Sales Order1_idx` ON `Sales Order_has_Donut` (`Sales Order_idSales Order` ASC);
+
+
+-- -----------------------------------------------------
+-- Table `Qty`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Qty` (
+  `idQty` INT NOT NULL AUTO_INCREMENT,
+  `Qtycol` INT NOT NULL,
+  `Donut_idDonut` INT NOT NULL,
+  PRIMARY KEY (`idQty`, `Donut_idDonut`);
+ALTER TABLE `QTY`
+  ADD CONSTRAINT `fk_Qty_Donut1`
+    FOREIGN KEY (`Donut_idDonut`)
+    REFERENCES `Donut` (`idDonut`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+CREATE INDEX `fk_Qty_Donut1_idx` ON `Qty` (`Donut_idDonut` ASC);
+
+
+-- -----------------------------------------------------
+-- Table `Price`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Price` (
+  `Pricecol` DECIMAL(7) NOT NULL,
+  `Donut_idDonut` INT NOT NULL,
+  PRIMARY KEY (`Donut_idDonut`);
+ALTER TABLE `Price`
+  ADD CONSTRAINT `fk_Price_Donut1`
+    FOREIGN KEY (`Donut_idDonut`)
+    REFERENCES `Donut` (`idDonut`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+-- -----------------------------------------------------
+-- Table `Customer`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Customer` (
+  `idCustomer` INT NOT NULL AUTO_INCREMENT,
+  `firstName` VARCHAR(45) NOT NULL,
+  `lastName` VARCHAR(45) NOT NULL,
+  `street` VARCHAR(45) NOT NULL,
+  `apt` VARCHAR(45) NULL,
+  `city` VARCHAR(45) NOT NULL,
+  `state` VARCHAR(2) NOT NULL,
+  `zip` INT(5) NOT NULL,
+  PRIMARY KEY (`idCustomer`));
+
+
+-- -----------------------------------------------------
+-- Table `Customer_has_Sales Order`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Customer_has_Sales Order` (
+  `Customer_idCustomer` INT NOT NULL,
+  `Sales Order_idSales Order` INT NOT NULL,
+  PRIMARY KEY (`Customer_idCustomer`, `Sales Order_idSales Order`);
+ALTER TABLE `Customer_has_Sales Order`
+  ADD CONSTRAINT `fk_Customer_has_Sales Order_Customer1`
+    FOREIGN KEY (`Customer_idCustomer`)
+    REFERENCES `Customer` (`idCustomer`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+ALTER TABLE `Customer_has_Sales Order`
+  ADD CONSTRAINT `fk_Customer_has_Sales Order_Sales Order1`
+    FOREIGN KEY (`Sales Order_idSales Order`)
+    REFERENCES `Sales Order` (`idSales Order`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+CREATE INDEX `fk_Customer_has_Sales Order_Sales Order1_idx` ON `Customer_has_Sales Order` (`Sales Order_idSales Order` ASC);
+
+CREATE INDEX `fk_Customer_has_Sales Order_Customer1_idx` ON `Customer_has_Sales Order` (`Customer_idCustomer` ASC);
+
+
+-- -----------------------------------------------------
+-- Table `phoneType`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `phoneType` (
+  `idphoneType` INT NOT NULL AUTO_INCREMENT,
+  `phoneTypecol` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idphoneType`));
+
+-- -----------------------------------------------------
+-- Table `Customer_has_phoneType`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Customer_has_phoneType` (
+  `Customer_idCustomer` INT NOT NULL,
+  `phoneType_idphoneType` INT NOT NULL,
+  `phoneNumber` INT(10) NULL,
+  PRIMARY KEY (`Customer_idCustomer`, `phoneType_idphoneType`);
+ALTER TABLE `Customer_has_phoneType`
+  ADD CONSTRAINT `fk_Customer_has_phoneType_Customer1`
+    FOREIGN KEY (`Customer_idCustomer`)
+    REFERENCES `Customer` (`idCustomer`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+ALTER TABLE `Customer_has_phoneType`
+  ADD CONSTRAINT `fk_Customer_has_phoneType_phoneType1`
+    FOREIGN KEY (`phoneType_idphoneType`)
+    REFERENCES `phoneType` (`idphoneType`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+CREATE INDEX `fk_Customer_has_phoneType_phoneType1_idx` ON `Customer_has_phoneType` (`phoneType_idphoneType` ASC);
+
+CREATE INDEX `fk_Customer_has_phoneType_Customer1_idx` ON `Customer_has_phoneType` (`Customer_idCustomer` ASC);
+CREATE VIEW `Customerinfo` AS
+SELECT *, CONCAT('firstName',' ','lastName') AS customerFullName FROM Customer;
+INSERT INTO Customer (idCustomer, firstName, lastName, street, apt, city, state, zip)
+  VALUES (NULL,'Brad', 'Pitt', '123 Main St', NULL, 'Beverly Hills', 'CA', '90210'),
+  (NULL,'Tom', 'Cruise', '4567 Main St', NULL, 'Beverly Hills', 'CA', '90210'),
+  (NULL,'Michael', 'Hunt', '764 Beaver Ln', 'A', 'Kansas City', 'MO', '64057'),
+  (NULL,'Oscar', 'Grouch', '123 Sesame St', NULL, 'Hollywood', 'CA', '90210'),
+  (NULL,'Seymore', 'Butts', '3453 Main St', NULL, 'Kansas City', 'MO', '64057');
+INSERT INTO Donut (idDonut, name, description)
+  VALUES (NULL,'Glazed', 'The Original'),
+  (NULL,'Long John', 'The Big-Daddy'),
+  (NULL,'Sprinkley Madness', 'The donut a unicorn would eat'),
+  (NULL,'Trifecta', 'The Trifecta. This donut will blow your mind by combining all three types divided into three delicious sections'); 
+INSERT INTO Tax (idTax, salesTax)   
+  VALUES (NULL,07); 
+INSERT INTO phoneType (idphoneType, phoneTypecol)  
+  VALUES (NULL,'Home'),
+  (NULL,'Mobile'),
+  (NULL,'Other');
+ALTER TABLE Customer_has_phoneType MODIFY `Customer_idCustomer` INT(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE Customer_has_phoneType MODIFY `phoneType_idphoneType` INT(11);
+INSERT INTO Customer_has_phoneType (phoneNumber)  
+  VALUES ('8165553984'),
+  ('8165553945'), 
+  ('2343244564'), 
+  ('4356452342'), 
+  ('0234324324');

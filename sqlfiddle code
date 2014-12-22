@@ -27,13 +27,13 @@ CREATE TABLE IF NOT EXISTS `Sales Order` (
   `specialNotes` VARCHAR(45) NULL,
   `date` DATETIME NOT NULL,
   `Tax_idTax` INT NOT NULL,
-  PRIMARY KEY (`idSales Order`, `Tax_idTax`);
+  PRIMARY KEY (`idSales Order`, `Tax_idTax`));
 ALTER TABLE `Sales Order`
   ADD CONSTRAINT `fk_Sales Order_Tax1`
     FOREIGN KEY (`Tax_idTax`)
     REFERENCES `Tax` (`idTax`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON UPDATE NO ACTION;
 
 CREATE INDEX `fk_Sales Order_Tax1_idx` ON `Sales Order` (`Tax_idTax` ASC);
 
@@ -44,7 +44,7 @@ CREATE INDEX `fk_Sales Order_Tax1_idx` ON `Sales Order` (`Tax_idTax` ASC);
 CREATE TABLE IF NOT EXISTS `Sales Order_has_Donut` (
   `Sales Order_idSales Order` INT NOT NULL,
   `Donut_idDonut` INT NOT NULL,
-  PRIMARY KEY (`Sales Order_idSales Order`, `Donut_idDonut`);
+  PRIMARY KEY (`Sales Order_idSales Order`, `Donut_idDonut`));
 ALTER TABLE `Sales Order_has_Donut`
   ADD CONSTRAINT `fk_Sales Order_has_Donut_Sales Order1`
     FOREIGN KEY (`Sales Order_idSales Order`)
@@ -56,7 +56,7 @@ ALTER TABLE `Sales Order_has_Donut`
     FOREIGN KEY (`Donut_idDonut`)
     REFERENCES `Donut` (`idDonut`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON UPDATE NO ACTION;
 
 CREATE INDEX `fk_Sales Order_has_Donut_Donut1_idx` ON `Sales Order_has_Donut` (`Donut_idDonut` ASC);
 
@@ -70,13 +70,13 @@ CREATE TABLE IF NOT EXISTS `Qty` (
   `idQty` INT NOT NULL AUTO_INCREMENT,
   `Qtycol` INT NOT NULL,
   `Donut_idDonut` INT NOT NULL,
-  PRIMARY KEY (`idQty`, `Donut_idDonut`);
+  PRIMARY KEY (`idQty`, `Donut_idDonut`));
 ALTER TABLE `QTY`
   ADD CONSTRAINT `fk_Qty_Donut1`
     FOREIGN KEY (`Donut_idDonut`)
     REFERENCES `Donut` (`idDonut`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON UPDATE NO ACTION;
 
 CREATE INDEX `fk_Qty_Donut1_idx` ON `Qty` (`Donut_idDonut` ASC);
 
@@ -87,13 +87,13 @@ CREATE INDEX `fk_Qty_Donut1_idx` ON `Qty` (`Donut_idDonut` ASC);
 CREATE TABLE IF NOT EXISTS `Price` (
   `Pricecol` DECIMAL(7) NOT NULL,
   `Donut_idDonut` INT NOT NULL,
-  PRIMARY KEY (`Donut_idDonut`);
+  PRIMARY KEY (`Donut_idDonut`));
 ALTER TABLE `Price`
   ADD CONSTRAINT `fk_Price_Donut1`
     FOREIGN KEY (`Donut_idDonut`)
     REFERENCES `Donut` (`idDonut`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON UPDATE NO ACTION;
 
 
 -- -----------------------------------------------------
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `Customer` (
 CREATE TABLE IF NOT EXISTS `Customer_has_Sales Order` (
   `Customer_idCustomer` INT NOT NULL,
   `Sales Order_idSales Order` INT NOT NULL,
-  PRIMARY KEY (`Customer_idCustomer`, `Sales Order_idSales Order`);
+  PRIMARY KEY (`Customer_idCustomer`, `Sales Order_idSales Order`));
 ALTER TABLE `Customer_has_Sales Order`
   ADD CONSTRAINT `fk_Customer_has_Sales Order_Customer1`
     FOREIGN KEY (`Customer_idCustomer`)
@@ -129,7 +129,7 @@ ALTER TABLE `Customer_has_Sales Order`
     FOREIGN KEY (`Sales Order_idSales Order`)
     REFERENCES `Sales Order` (`idSales Order`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON UPDATE NO ACTION;
 
 CREATE INDEX `fk_Customer_has_Sales Order_Sales Order1_idx` ON `Customer_has_Sales Order` (`Sales Order_idSales Order` ASC);
 
@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `Customer_has_phoneType` (
   `Customer_idCustomer` INT NOT NULL,
   `phoneType_idphoneType` INT NOT NULL,
   `phoneNumber` INT(10) NULL,
-  PRIMARY KEY (`Customer_idCustomer`, `phoneType_idphoneType`);
+  PRIMARY KEY (`Customer_idCustomer`, `phoneType_idphoneType`));
 ALTER TABLE `Customer_has_phoneType`
   ADD CONSTRAINT `fk_Customer_has_phoneType_Customer1`
     FOREIGN KEY (`Customer_idCustomer`)
@@ -163,7 +163,7 @@ ALTER TABLE `Customer_has_phoneType`
     FOREIGN KEY (`phoneType_idphoneType`)
     REFERENCES `phoneType` (`idphoneType`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON UPDATE NO ACTION;
 
 CREATE INDEX `fk_Customer_has_phoneType_phoneType1_idx` ON `Customer_has_phoneType` (`phoneType_idphoneType` ASC);
 
